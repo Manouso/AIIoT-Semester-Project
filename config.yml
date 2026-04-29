@@ -1,12 +1,12 @@
 #--------------------- DB ----------------------
 # DB Connection with the uri (host)
-client: "mongodb://127.0.0.1:27017/"
+client: "mongodb://localhost:27017/"
 
 # db name
-db: "IoT_Database"
+db: "aiot_course"
 
 # db collection
-col: "IoT_Collection"
+col: "aiot_course_collection"
 
 #--------------------- Dataframe Instantiation ----------------------
 # Dataframe columns list
@@ -23,8 +23,8 @@ single_instance_path: "./PAMAP2_Dataset/Protocol/subject101.dat"
 #--------------------- Data Engineering ----------------------
 # sliding window algorithm parameters
 sliding_window:
-  ws:128 # window size 128 (1.28s with 100Hz sampling frequency)
-  overlap:0.5 # overlap ratio
+  ws: 128 # window size 128 (1.28s with 100Hz sampling frequency)
+  overlap: 0.5 # overlap ratio
   w_type: "hann" # window type for the sliding window algorithm
   w_center: True # whether to center the window or not
   print_stats: True # whether to print the statistics of the generated windows or not

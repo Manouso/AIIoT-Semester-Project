@@ -1,2 +1,8 @@
 # ignore PAMAP2_Dataset
 PAMAP2_Dataset/
+
+# ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# ignore __pycache__ folders
+__pycache__/
