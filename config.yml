@@ -52,15 +52,42 @@ classifier:
     C: 10 # regularization parameter
     kernel: "rbf" # kernel type
     gamma: "scale" # kernel coefficient
+    balanced: True # whether to use balanced class weights or not
+  RandomForest:
+    n_estimators: 100 # number of trees in the forest
+    max_depth: 10 # maximum depth of the tree
 
 # Parameter Grid for Fine-tuning, for instance, a Grid Search classifier
 fine_tune:
-  param_grid: [
-    {'C': [1, 10, 100, 1000], 'kernel': ['linear']}, # linear kernel does not use gamma, so we exclude it from the parameter grid for the linear kernel
-    {'C': [1, 10, 100, 1000], 'gamma': [0.001, 0.0001], 'kernel': ['rbf']}, # for the RBF kernel, we include both C and gamma in the parameter grid
-   ]
-  cv: 5
-  verbose: 1
+  # GridSearchCV parameters for aggressive search
+  grid_search:
+    factor: 3 # reduction factor: progressively reduce candidate pool
+    resource: 'n_samples' # resource allocation strategy
+    max_resources: 'auto' # maintain optimality of halving
+    min_resources: 1 # start with the smallest budget
+    scoring: 'f1_macro'
+
+  SVC:
+    # Stronger parameter grids with expanded search space
+    param_grid:
+      C: [0.1, 0.5, 1] # regularization parameter range
+      gamma: ['scale', 'auto'] # comprehensive gamma exploration
+      kernel: ['rbf'] 
+      class_weight: ['balanced'] # handle class imbalance
+    cv: 5 # increased cross-validation folds for stability
+    verbose: 1
+
+  RandomForest:
+    param_grid:
+      - n_estimators: [200, 300] # tree count range
+        max_depth: [10, 20] # depth exploration
+        min_samples_split: [10, 20] # split criteria
+        min_samples_leaf: [4, 10, 20] # leaf size tuning
+        max_features: ['sqrt'] # feature selection strategies
+        class_weight: ['balanced_subsample'] # handle class imbalance
+    cv: 5 # increased cross-validation folds
+    verbose: 1
+
 
 
 

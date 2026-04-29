@@ -1,6 +1,13 @@
+"""Utility functions for data processing and feature engineering.
+
+This module provides functions for time-series segmentation, filtering,
+feature extraction, and label encoding for activity recognition tasks.
+"""
+
 from os import listdir
 from os.path import isfile, join
-import scipy
+from typing import List, Tuple, Dict, Any, Optional
+import scipy.signal
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
@@ -9,13 +16,13 @@ import seaborn as sns
 
 
 def sliding_window_pd(
-        df,
-        ws=500,
-        overlap=250,
-        w_type="hann",
-        w_center=True,
-        print_stats=False
-) -> list:
+        df: pd.DataFrame,
+        ws: int = 500,
+        overlap: int = 250,
+        w_type: str = "hann",
+        w_center: bool = True,
+        print_stats: bool = False
+) -> List[pd.DataFrame]:
     """Applies the sliding window algorithm to the DataFrame rows.
 
     Args:
