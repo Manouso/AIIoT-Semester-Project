@@ -1,0 +1,66 @@
+#--------------------- DB ----------------------
+# DB Connection with the uri (host)
+client: "mongodb://127.0.0.1:27017/"
+
+# db name
+db: "IoT_Database"
+
+# db collection
+col: "IoT_Collection"
+
+#--------------------- Dataframe Instantiation ----------------------
+# Dataframe columns list
+order: ["hand_acc16_x", "hand_acc16_y", "hand_acc16_z", "hand_gyro_x", "hand_gyro_y", "hand_gyro_z"]
+rename: ["acc_x", "acc_y", "acc_z", "gyro_x", "gyro_y", "gyro_z"]
+
+#--------------------- Dataset Local Storage ----------------------
+# dataset location
+data_path: "./PAMAP2_Dataset/Protocol/"
+# single data instance location path to experiment with the data engineering process and visualization
+single_instance_path: "./PAMAP2_Dataset/Protocol/subject101.dat"
+
+
+#--------------------- Data Engineering ----------------------
+# sliding window algorithm parameters
+sliding_window:
+  ws:128 # window size 128 (1.28s with 100Hz sampling frequency)
+  overlap:0.5 # overlap ratio
+  w_type: "hann" # window type for the sliding window algorithm
+  w_center: True # whether to center the window or not
+  print_stats: True # whether to print the statistics of the generated windows or not
+
+# window to handle for visualization purposes
+x_number: 2
+
+# filtering parameterization
+filter:
+  order: 4 # 4 is a common choice for the order of the Butterworth filter
+  wn: 0.2 # normalized cutoff frequency (0.2 corresponds to 20% of the Nyquist frequency)
+  type: "lowpass"
+
+
+#--------------------- $ Data Preparation ----------------------
+# Dimensionality reduction
+PCA:
+  n_comp: 0.95 # retain 95% of the variance
+
+
+#--------------------- Learning ----------------------
+# Classifier - Statistical
+classifier:
+  SVC:
+    C: 10 # regularization parameter
+    kernel: "rbf" # kernel type
+    gamma: "scale" # kernel coefficient
+
+# Parameter Grid for Fine-tuning, for instance, a Grid Search classifier
+fine_tune:
+  param_grid: [
+    {'C': [1, 10, 100, 1000], 'kernel': ['linear']}, # linear kernel does not use gamma, so we exclude it from the parameter grid for the linear kernel
+    {'C': [1, 10, 100, 1000], 'gamma': [0.001, 0.0001], 'kernel': ['rbf']}, # for the RBF kernel, we include both C and gamma in the parameter grid
+   ]
+  cv: 5
+  verbose: 1
+
+
+
