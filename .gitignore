@@ -6,3 +6,5 @@ PAMAP2_Dataset/
 
 # ignore __pycache__ folders
 __pycache__/
+
+.venv
