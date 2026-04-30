@@ -8,3 +8,4 @@ PAMAP2_Dataset/
 __pycache__/
 
 .venv
+results/
