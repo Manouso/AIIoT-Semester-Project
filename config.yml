@@ -42,7 +42,7 @@ filter:
 #--------------------- $ Data Preparation ----------------------
 # Dimensionality reduction
 PCA:
-  n_comp: 0.98 # retain 98% of the variance
+  n_comp: 0.95 # retain 95% of the variance
 
 
 #--------------------- Learning ----------------------
@@ -68,26 +68,20 @@ fine_tune:
     scoring: 'f1_macro'
 
   SVC:
-    # Stronger parameter grids with expanded search space
     param_grid:
-      C: [0.1, 0.5, 1, 10, 100] # regularization parameter range
-      gamma: [0.001, 0.01, 'scale', 'auto'] # comprehensive gamma exploration
-      kernel: ['rbf'] 
-      class_weight: ['balanced'] # handle class imbalance
-    cv: 5 # increased cross-validation folds for stability
-    verbose: 1
+      # Lower C values to increase regularization
+      C: [0.01, 0.1, 1] 
+      # Smaller gamma to prevent the kernel from being too "wiggly"
+      gamma: [0.001, 0.01, 'scale'] 
+      kernel: ['rbf']
+      class_weight: ['balanced']
+    cv: 5 
 
   RandomForest:
     param_grid:
-      - n_estimators: [400, 600] # tree count range
-        max_depth: [20, 40, null] # depth exploration
-        min_samples_split: [2, 5] # split criteria
-        min_samples_leaf: [1, 2] # leaf size tuning
-        max_features: ['sqrt'] # feature selection strategies
-        class_weight: ['balanced_subsample'] # handle class imbalance
-    cv: 5 # increased cross-validation folds
-    verbose: 1
-
-
-
-
+      - n_estimators: [100, 400, 800]    # More trees for stability
+        max_depth: [10, 20, 30]     # Capping depth prevents memorizing specific subjects
+        min_samples_leaf: [2, 4]    # Prevents trees from creating nodes for single outliers
+        max_features: ['sqrt'] 
+        class_weight: ['balanced_subsample']
+    cv: 5
