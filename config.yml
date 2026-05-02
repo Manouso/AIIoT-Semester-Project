@@ -23,8 +23,8 @@ single_instance_path: "./PAMAP2_Dataset/Protocol/subject101.dat"
 #--------------------- Data Engineering ----------------------
 # sliding window algorithm parameters
 sliding_window:
-  ws: 128 # window size 128 (1.28s with 100Hz sampling frequency)
-  overlap: 0.5 # overlap ratio
+  ws: 500 # window size is 5 seconds (100Hz sampling rate) -> 500 samples
+  overlap: 250 # overlap ratio is 50% -> 250 samples
   w_type: "hann" # window type for the sliding window algorithm
   w_center: True # whether to center the window or not
   print_stats: True # whether to print the statistics of the generated windows or not
@@ -35,8 +35,9 @@ x_number: 2
 # filtering parameterization
 filter:
   order: 4 # 4 is a common choice for the order of the Butterworth filter
-  wn: 0.2 # normalized cutoff frequency (0.2 corresponds to 20% of the Nyquist frequency)
+  wn: 0.4 # cutoff frequency normalized to the Nyquist frequency 
   type: "lowpass"
+  fs: 100 # sampling frequency of the data (100Hz for PAMAP2)
 
 
 #--------------------- $ Data Preparation ----------------------
@@ -49,13 +50,14 @@ PCA:
 # Classifier - Statistical
 classifier:
   SVC:
-    C: 10 # regularization parameter
+    C: 50 # regularization parameter
     kernel: "rbf" # kernel type
-    gamma: "scale" # kernel coefficient
-    balanced: True # whether to use balanced class weights or not
+    gamma: "auto" # kernel coefficient
+    class_weight: "balanced" # class weight for handling imbalanced datasets
   RandomForest:
     n_estimators: 100 # number of trees in the forest
     max_depth: 10 # maximum depth of the tree
+    class_weight: "balanced" # class weight for handling imbalanced datasets
 
 # Parameter Grid for Fine-tuning, for instance, a Grid Search classifier
 fine_tune:
@@ -70,18 +72,18 @@ fine_tune:
   SVC:
     param_grid:
       # Lower C values to increase regularization
-      C: [0.01, 0.1, 1] 
+      C: [0.1, 1, 10] 
       # Smaller gamma to prevent the kernel from being too "wiggly"
-      gamma: [0.001, 0.01, 'scale'] 
+      gamma: [0.01, 0.1, 'scale'] 
       kernel: ['rbf']
       class_weight: ['balanced']
     cv: 5 
 
   RandomForest:
     param_grid:
-      - n_estimators: [100, 400, 800]    # More trees for stability
-        max_depth: [10, 20, 30]     # Capping depth prevents memorizing specific subjects
+      - n_estimators: [100, 200]    # More trees for stability
+        max_depth: [10, 20, null]     # Capping depth prevents memorizing specific subjects
         min_samples_leaf: [2, 4]    # Prevents trees from creating nodes for single outliers
         max_features: ['sqrt'] 
-        class_weight: ['balanced_subsample']
+        class_weight: ['balanced']
     cv: 5

@@ -1,13 +1,6 @@
-"""Utility functions for data processing and feature engineering.
-
-This module provides functions for time-series segmentation, filtering,
-feature extraction, and label encoding for activity recognition tasks.
-"""
-
 from os import listdir
 from os.path import isfile, join
-from typing import List, Tuple, Dict, Any, Optional
-import scipy.signal
+import scipy
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
@@ -16,13 +9,13 @@ import seaborn as sns
 
 
 def sliding_window_pd(
-        df: pd.DataFrame,
-        ws: int = 500,
-        overlap: int = 250,
-        w_type: str = "hann",
-        w_center: bool = True,
-        print_stats: bool = False
-) -> List[pd.DataFrame]:
+        df,
+        ws=500,
+        overlap=250,
+        w_type="hann",
+        w_center=True,
+        print_stats=False
+) -> list:
     """Applies the sliding window algorithm to the DataFrame rows.
 
     Args:
@@ -225,19 +218,19 @@ def encode_labels(instances_list) -> np.ndarray:
 
 
 def list_files_in_folder(folder_path) -> list:
-    """Returns a list of all CSV files within the specified folder.
+    """Returns a list of all DAT files within the specified folder.
 
     Args:
         folder_path (str): The directory path to search for files.
 
     Returns:
         list: A list containing the filenames (strings) of all files
-              in the directory that end with the '.csv' extension.
+              in the directory that end with the '.dat' extension.
     """
     files_list = list()
     for f in listdir(folder_path):
         if isfile(join(folder_path, f)):
-            if f.endswith(".csv"):
+            if f.endswith(".dat"):
                 files_list.append(f)
 
     return files_list
